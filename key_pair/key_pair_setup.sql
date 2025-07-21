@@ -19,10 +19,10 @@ ALTER USER example_user SET RSA_PUBLIC_KEY='MIIBIjANBgkqh...';
 -- Only owners of a user, or users with the SECURITYADMIN role or higher can alter a user
 
 
--- Step 3: Verify user's public key fingerprint - run as one block
-DESC USER example_user;
-SELECT SUBSTR((SELECT "value" FROM TABLE(RESULT_SCAN(LAST_QUERY_ID()))
-  WHERE "property" = 'RSA_PUBLIC_KEY_FP'), LEN('SHA256:') + 1);
+-- Step 3: Verify user's public key fingerprint
+DESC USER example_user
+  ->> SUBSTR((SELECT "value" FROM $1
+    WHERE  "property" = 'RSA_PUBLIC_KEY_FP'), LEN('SHA256:') + 1);
 
 -- output: Azk1Pq...
 -- record output
