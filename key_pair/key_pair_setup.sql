@@ -21,8 +21,10 @@ ALTER USER example_user SET RSA_PUBLIC_KEY='MIIBIjANBgkqh...';
 
 -- Step 3: Verify user's public key fingerprint
 DESC USER example_user
-  ->> SUBSTR((SELECT "value" FROM $1
-    WHERE  "property" = 'RSA_PUBLIC_KEY_FP'), LEN('SHA256:') + 1);
+  ->> SELECT SUBSTR(
+        (SELECT "value" FROM $1
+           WHERE "property" = 'RSA_PUBLIC_KEY_FP'),
+        LEN('SHA256:') + 1) AS key;
 
 -- output: Azk1Pq...
 -- record output
